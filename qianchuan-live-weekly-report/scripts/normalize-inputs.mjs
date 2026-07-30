@@ -202,6 +202,18 @@ export function mergeLiveDetails(sessions, details) {
       });
     }
 
+    if (detail.status === "no_data") {
+      return deriveSessionMetrics({
+        ...session,
+        natural_viewers: null,
+        live_room_id: String(detail.live_room_id),
+        detail_url: detail.detail_url,
+        detail_captured_at: detail.captured_at,
+        web_match_status: "详情页暂无数据",
+        pay_per_thousand_source: "原始数据公式补算",
+      });
+    }
+
     return deriveSessionMetrics({
       ...session,
       natural_viewers: numberOrNull(detail.natural_viewers),
@@ -227,14 +239,37 @@ export function validateQianchuanPeriod(period, config) {
 
   const netTransactionAmount = numberOrNull(period.net_transaction_amount);
   const comprehensiveCost = numberOrNull(period.comprehensive_cost);
+  const reportedRoi = numberOrNull(period.reported_roi);
+  const reportedRoiLabel = period.reported_roi_label ?? null;
+  const allowedRoiLabels = new Set(["综合营销ROI", "综合ROI"]);
+  if (reportedRoiLabel && !allowedRoiLabels.has(reportedRoiLabel)) {
+    throw new Error(
+      `Unsupported Qianchuan ROI label: ${reportedRoiLabel}`,
+    );
+  }
+  if (reportedRoi !== null && !reportedRoiLabel) {
+    throw new Error("reported_roi_label is required when reported_roi exists");
+  }
+  const comprehensiveRoi =
+    netTransactionAmount === null || comprehensiveCost === null
+      ? null
+      : safeRatio(netTransactionAmount, comprehensiveCost);
+  if (
+    reportedRoi !== null &&
+    comprehensiveRoi !== null &&
+    Math.abs(reportedRoi - comprehensiveRoi) > 0.02
+  ) {
+    throw new Error(
+      "Reported Qianchuan ROI does not match net transaction amount and comprehensive cost",
+    );
+  }
   return {
     ...period,
     account_id: String(period.account_id),
     net_transaction_amount: netTransactionAmount,
     comprehensive_cost: comprehensiveCost,
-    comprehensive_roi:
-      netTransactionAmount === null || comprehensiveCost === null
-        ? null
-        : safeRatio(netTransactionAmount, comprehensiveCost),
+    reported_roi_label: reportedRoiLabel,
+    reported_roi: reportedRoi,
+    comprehensive_roi: comprehensiveRoi,
   };
 }

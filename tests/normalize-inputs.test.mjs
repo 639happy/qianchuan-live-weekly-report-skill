@@ -154,6 +154,31 @@ test("matches details and keeps unmatched webpage values empty", () => {
   assert.equal(merged[2].calculated_paid_viewers, null);
 });
 
+test("retains the room ID but marks a detail page that reports no data", () => {
+  const normalized = normalizeCompassRows({
+    ...compass,
+    config,
+    fieldMap,
+  });
+  const merged = mergeLiveDetails(normalized.sessions, [
+    ...details,
+    {
+      start_time: "2026-08-05 19:20:00",
+      duration_minutes: 240,
+      live_room_id: "ROOM-SYNTH-NO-DATA",
+      detail_url: "https://compass.jinritemai.com/shop/live-detail",
+      natural_viewers: null,
+      status: "no_data",
+      captured_at: "2026-08-10T09:00:00+08:00",
+    },
+  ]);
+
+  assert.equal(merged[2].live_room_id, "ROOM-SYNTH-NO-DATA");
+  assert.equal(merged[2].natural_viewers, null);
+  assert.equal(merged[2].web_match_status, "详情页暂无数据");
+  assert.equal(merged[2].pay_per_thousand_source, "原始数据公式补算");
+});
+
 test("rejects ambiguous same-minute detail matches", () => {
   const normalized = normalizeCompassRows({
     ...compass,
@@ -178,6 +203,48 @@ test("validates exact Qianchuan account and period and computes ROI", () => {
   const result = validateQianchuanPeriod(qianchuan, config);
 
   assert.equal(result.comprehensive_roi, 3);
+});
+
+test("accepts the current Chengfang comprehensive marketing ROI label", () => {
+  const result = validateQianchuanPeriod(
+    {
+      ...qianchuan,
+      reported_roi_label: "综合营销ROI",
+      reported_roi: 3,
+    },
+    config,
+  );
+
+  assert.equal(result.reported_roi_label, "综合营销ROI");
+  assert.equal(result.reported_roi, 3);
+  assert.equal(result.comprehensive_roi, 3);
+});
+
+test("rejects an unknown Qianchuan ROI label or inconsistent reported value", () => {
+  assert.throws(
+    () =>
+      validateQianchuanPeriod(
+        {
+          ...qianchuan,
+          reported_roi_label: "广告ROI",
+          reported_roi: 3,
+        },
+        config,
+      ),
+    /Unsupported Qianchuan ROI label/,
+  );
+  assert.throws(
+    () =>
+      validateQianchuanPeriod(
+        {
+          ...qianchuan,
+          reported_roi_label: "综合营销ROI",
+          reported_roi: 2.5,
+        },
+        config,
+      ),
+    /does not match net transaction amount/,
+  );
 });
 
 test("rejects Qianchuan data from a different period", () => {

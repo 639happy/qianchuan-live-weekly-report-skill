@@ -126,6 +126,9 @@ test("automated mode checks every prerequisite and samples before full run", () 
   }
   assert.match(automated, /验证码[\s\S]*停止/);
   assert.match(automated, /小样本[\s\S]*完整周/);
+  assert.match(automated, /综合营销ROI/);
+  assert.match(automated, /账号行[\s\S]*顶部汇总/);
+  assert.match(automated, /暂无数据[\s\S]*不补0/);
 });
 
 test("public onboarding contains no known private project identifiers", () => {

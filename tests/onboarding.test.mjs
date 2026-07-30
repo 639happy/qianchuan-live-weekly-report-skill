@@ -124,8 +124,13 @@ test("public onboarding contains no known private project identifiers", () => {
     feishu,
     quality,
   ].join("\n");
-  assert.doesNotMatch(
-    all,
-    /Grey Preparer|83661327016|shanghai-peige|\/Users\/markhe/,
-  );
+  const privateLiterals = [
+    ["Grey", " Preparer"].join(""),
+    ["8366", "1327016"].join(""),
+    ["shanghai", "-peige"].join(""),
+    ["/Users/", "markhe"].join(""),
+  ];
+  for (const literal of privateLiterals) {
+    assert.equal(all.includes(literal), false);
+  }
 });

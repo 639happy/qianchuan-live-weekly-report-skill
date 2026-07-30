@@ -27,6 +27,17 @@ export function nextFeishuAction(probe) {
   return { action: "write_sheet", status: "ready" };
 }
 
+export function markFeishuPreflightFailure(state, error) {
+  return {
+    ...state,
+    feishu_publish_status: "failed",
+    feishu_stage: "preflight_failed",
+    delivery_status: "awaiting_user_decision",
+    delivery_target_actual: "pending",
+    feishu_error: error ?? "Feishu preflight failed",
+  };
+}
+
 export function markFeishuWriteResult(state, result) {
   if (!result.ok) {
     return {

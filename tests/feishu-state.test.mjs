@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  markFeishuPreflightFailure,
   markFeishuReadbackResult,
   markFeishuWriteResult,
   nextFeishuAction,
@@ -26,6 +27,23 @@ test("missing CLI asks for installation instead of switching to Excel", () => {
     action: "install_cli",
     status: "blocked",
   });
+});
+
+test("unrecoverable CLI preflight failure waits for an explicit fallback decision", () => {
+  const result = markFeishuPreflightFailure(
+    {
+      delivery_target_requested: "feishu",
+      delivery_target_actual: "pending",
+      delivery_status: "blocked",
+      feishu_publish_status: "blocked",
+    },
+    "CLI unavailable after guided installation",
+  );
+
+  assert.equal(result.feishu_publish_status, "failed");
+  assert.equal(result.delivery_status, "awaiting_user_decision");
+  assert.equal(result.delivery_target_actual, "pending");
+  assert.equal(result.feishu_stage, "preflight_failed");
 });
 
 test("missing profile asks for user initialization", () => {

@@ -81,6 +81,23 @@ test("file-mode checklist labels required and conditional inputs", () => {
   assert.match(checklist, /千川周期经营数据/);
 });
 
+test("automated mode checks every prerequisite and samples before full run", () => {
+  for (const expected of [
+    "Codex桌面客户端",
+    "Chrome插件",
+    "同一个Chrome用户配置",
+    "compass.jinritemai.com",
+    "qianchuan.jinritemai.com",
+    "下载权限",
+    "2—3场",
+    "Cookie",
+  ]) {
+    assert.ok(automated.includes(expected), `missing: ${expected}`);
+  }
+  assert.match(automated, /验证码[\s\S]*停止/);
+  assert.match(automated, /小样本[\s\S]*完整周/);
+});
+
 test("public onboarding contains no known private project identifiers", () => {
   const all = [
     skillText,

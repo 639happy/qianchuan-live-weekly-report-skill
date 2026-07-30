@@ -1,0 +1,18 @@
+[
+  {
+    "start_time": "2026-08-03 06:30:00",
+    "duration_minutes": 240,
+    "live_room_id": "ROOM-SYNTH-001",
+    "detail_url": "https://compass.jinritemai.com/shop/live-detail",
+    "natural_viewers": 600,
+    "captured_at": "2026-08-10T09:00:00+08:00"
+  },
+  {
+    "start_time": "2026-08-04 15:10:00",
+    "duration_minutes": 480,
+    "live_room_id": "ROOM-SYNTH-002",
+    "detail_url": "https://compass.jinritemai.com/shop/live-detail",
+    "natural_viewers": 880,
+    "captured_at": "2026-08-10T09:00:00+08:00"
+  }
+]

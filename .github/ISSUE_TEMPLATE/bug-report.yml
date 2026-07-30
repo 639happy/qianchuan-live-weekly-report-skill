@@ -1,0 +1,66 @@
+name: Bug报告
+description: 报告可复现的问题，请只提供已脱敏信息
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请勿上传真实导出、包含账号数据的截图、Cookie、token、账号ID、后台URL、飞书链接或经营数据。
+  - type: input
+    id: skill_version
+    attributes:
+      label: Skill版本
+      placeholder: 例如 v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: data_mode
+    attributes:
+      label: 数据模式
+      options:
+        - 文件模式
+        - 全自动模式
+    validations:
+      required: true
+  - type: dropdown
+    id: delivery
+    attributes:
+      label: 交付方式
+      options:
+        - Excel
+        - 飞书表格
+    validations:
+      required: true
+  - type: input
+    id: structure_version
+    attributes:
+      label: 结构版本
+      description: 请填写罗盘或千川导出结构版本；不知道时填“未知”
+    validations:
+      required: true
+  - type: textarea
+    id: redacted_context
+    attributes:
+      label: 已脱敏字段与错误文本
+      description: 只列字段名和已脱敏报错，不粘贴真实行数据
+      placeholder: |
+        缺失字段：自然流量观看人数
+        错误文本：账号不匹配（账号值已删除）
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 从选择模式开始，逐步说明怎样出现问题
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy_confirmation
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我确认没有上传真实导出、截图、Cookie、token、账号ID、后台URL、飞书链接或经营数据
+          required: true

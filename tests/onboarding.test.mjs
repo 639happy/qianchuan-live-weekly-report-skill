@@ -72,6 +72,23 @@ test("Feishu failure requires the exact explicit fallback question", () => {
   assert.match(quality, /awaiting_user_decision/);
 });
 
+test("Feishu delivery documents public installation, user identity, and readback", () => {
+  for (const expected of [
+    "npx @larksuite/cli@latest install",
+    "lark-cli --version",
+    "lark-cli config init --new",
+    "lark-cli profile list",
+    "--as user",
+    "同一用户身份",
+    "回读",
+    "飞书表格当前无法完成，是否确认将本次最终交付回退为Excel文件？",
+  ]) {
+    assert.ok(feishu.includes(expected), `missing: ${expected}`);
+  }
+  assert.match(feishu, /不得[\s\S]*自动[\s\S]*bot/);
+  assert.match(feishu, /不得[\s\S]*自动[\s\S]*Excel/);
+});
+
 test("file-mode checklist labels required and conditional inputs", () => {
   assert.match(checklist, /必需/);
   assert.match(checklist, /条件必需/);

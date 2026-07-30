@@ -1,0 +1,4 @@
+interface:
+  display_name: "千川直播周报"
+  short_description: "从罗盘与千川数据生成可回查、可验收、可复用的直播经营周报"
+  default_prompt: "使用 $qianchuan-live-weekly-report 生成并验收我的千川直播周报。"

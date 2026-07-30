@@ -1,0 +1,14 @@
+.DS_Store
+.release-denylist.local
+report-config.json
+outputs/
+downloads/
+private-data/
+*.xlsx
+*.xls
+*.log
+*.har
+*.png
+*.jpg
+*.jpeg
+*.mp4

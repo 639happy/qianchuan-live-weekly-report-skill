@@ -93,11 +93,15 @@ test("Feishu delivery documents public installation, user identity, and readback
     "lark-cli profile list",
     "--as user",
     "同一用户身份",
+    "+workbook-import",
+    "+workbook-info",
+    "+cells-get",
     "回读",
     "飞书表格当前无法完成，是否确认将本次最终交付回退为Excel文件？",
   ]) {
     assert.ok(feishu.includes(expected), `missing: ${expected}`);
   }
+  assert.doesNotMatch(feishu, /sheets \+(create|info|write|read)\b/);
   assert.match(feishu, /不得[\s\S]*自动[\s\S]*bot/);
   assert.match(feishu, /不得[\s\S]*自动[\s\S]*Excel/);
 });

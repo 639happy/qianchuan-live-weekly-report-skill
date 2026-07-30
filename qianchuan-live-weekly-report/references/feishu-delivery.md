@@ -87,11 +87,12 @@ lark-cli auth login --device-code "<原命令返回的device_code>"
 
 所有命令均显式指定用户选择的 profile 和 `--as user`。以下占位符不得原样执行。
 
-创建表格：
+本地Excel回读验收通过后，将其导入为飞书表格。这样可以保留四张工作表，避免在云端重复拼装：
 
 ```bash
-lark-cli sheets +create \
-  --title "<报告标题>" \
+lark-cli sheets +workbook-import \
+  --file "<本地已验收的xlsx路径>" \
+  --name "<报告标题>" \
   --profile "<用户选择的profile>" \
   --as user
 ```
@@ -99,20 +100,8 @@ lark-cli sheets +create \
 获取表格和工作表信息：
 
 ```bash
-lark-cli sheets +info \
+lark-cli sheets +workbook-info \
   --url "<创建命令返回的表格URL>" \
-  --profile "<用户选择的profile>" \
-  --as user
-```
-
-先小批量写入表头和样例行，再分批写入完整数据：
-
-```bash
-lark-cli sheets +write \
-  --url "<表格URL>" \
-  --sheet-id "<sheet_id>" \
-  --range "A1" \
-  --values '<二维JSON数组>' \
   --profile "<用户选择的profile>" \
   --as user
 ```
@@ -120,7 +109,7 @@ lark-cli sheets +write \
 写入完成后，必须使用同一用户身份回读：
 
 ```bash
-lark-cli sheets +read \
+lark-cli sheets +cells-get \
   --url "<表格URL>" \
   --sheet-id "<sheet_id>" \
   --range "<覆盖表头和校验单元格的范围>" \
